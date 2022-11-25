@@ -140,6 +140,9 @@ ofp_tcp_reass_flush(struct tcpcb *tp)
 
 	while ((qe = OFP_LIST_FIRST(&tp->t_segq)) != NULL) {
 		OFP_LIST_REMOVE(qe, tqe_q);
+
+		odp_packet_free(qe->tqe_m);  // This code is necessary to free the odp packets which are held by the tcp segments  as part of re-assembly list.**
+
 		uma_zfree(V_tcp_reass_zone, qe);
 		tp->t_segqlen--;
 	}
